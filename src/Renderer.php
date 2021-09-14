@@ -12,7 +12,7 @@ class Renderer
         $board = '';
         foreach ($world->getMap() as $row) {
             foreach ($row as $cell) {
-                $board .= ' ' . (($cell && $cell->isAlive()) ? self::ALIVE : self::DEAD);
+                $board .= ' ' . ($cell && $cell->isAlive() ? self::ALIVE : self::DEAD);
             }
             $board .= "\n";
         }
