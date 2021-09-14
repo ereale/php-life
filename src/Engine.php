@@ -15,14 +15,21 @@ class Engine
 
     public function processCell(World $world, ?Cell $cell, int $x, int $y): Cell
     {
-        $cellNeighbours = $world->countNeighbours($x, $y);
-
-        if (!$cell->isAlive()) {
-            $newState = $cellNeighbours === $this->spawn;
-        } else {
-            $newState = $cellNeighbours >= $this->min && $cellNeighbours <= $this->max;
-        }
+        $newState = $this->shouldLive($world, $cell, $x, $y);
 
         return $cell::create($newState);
+    }
+
+    private function shouldLive(World $world, ?Cell $cell, int $x, int $y): bool
+    {
+        $cellNeighbours = $world->countNeighbours($x, $y);
+
+        if ($cell && $cell->isAlive()) {
+            $newState = $cellNeighbours >= $this->min && $cellNeighbours <= $this->max;
+        } else {
+            $newState = $cellNeighbours === $this->spawn;
+        }
+
+        return $newState;
     }
 }
