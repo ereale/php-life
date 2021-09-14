@@ -4,6 +4,7 @@ class Renderer
 {
     private const ALIVE = '▓▓';
     private const DEAD = '░░';
+    private const HORIZONTAL_PADDING = ' ';
 
     public static function render(World $world, int $delay = 1): void
     {
@@ -12,7 +13,7 @@ class Renderer
         $board = '';
         foreach ($world->getMap() as $row) {
             foreach ($row as $cell) {
-                $board .= ' ' . ($cell && $cell->isAlive() ? self::ALIVE : self::DEAD);
+                $board .= self::HORIZONTAL_PADDING . ($cell && $cell->isAlive() ? self::ALIVE : self::DEAD);
             }
             $board .= "\n";
         }
