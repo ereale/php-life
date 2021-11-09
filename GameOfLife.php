@@ -151,6 +151,7 @@ function main()
 
     if ($boardStateFile = $argv[1]) {
         $boardState = json_decode(file_get_contents($boardStateFile), true);
+        playGameOfLife($boardState);
     } else {
         $boardState = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -165,9 +166,8 @@ function main()
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ];
+        playGameOfLife($boardState);
     }
-
-    playGameOfLife($boardState);
 }
 
 main();
