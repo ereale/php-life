@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ERROR | E_PARSE);
+
 /**
  * Conway's Game of Life
  *
@@ -14,15 +16,20 @@
  */
 class GameOfLife
 {
-    const MIN = 2;
-    const MAX = 3;
-    const SPAWN = 3;
+    const MIN = '2';
+    const MAX = '3';
+    const SPAWN = '3';
 
-    public $board;
+    public Board $board;
 
-    function __construct($boardState)
+    function getCells()
     {
-        $this->board = $boardState;
+        return $this->board->array();
+    }
+
+    function setBoard($board)
+    {
+        $this->board = $board;
     }
 
     function evolve()
@@ -30,28 +37,25 @@ class GameOfLife
         $neighbourOffsets = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
         $newBoard = [];
-        foreach ($this->board as $x => $row) {
+        foreach ($this->getCells() as $x => $row) {
             foreach ($row as $y => $cellState) {
 
                 // count neighbouring living cells
                 $neighbourCount = 0;
-                foreach ($neighbourOffsets as [$xOffset, $yOffset]) {
-                    if ($this->board[$x+$xOffset][$y+$yOffset] ?? false) {
+                foreach ($neighbourOffsets as [$xOffset, $yOffset])
+                    if ($this->getCells()[$x+$xOffset][$y+$yOffset])
                         $neighbourCount = $neighbourCount + 1;
-                    }
-                }
 
                 // update the target cell based on GOL rules
-                if ($cellState) {
-                    $newState = $neighbourCount >= self::MIN && $neighbourCount <= self::MAX;
-                } else {
-                    $newState = $neighbourCount === self::SPAWN;
-                }
+                $newState = $cellState
+                    ? $neighbourCount >= self::MIN && $neighbourCount <= self::MAX
+                    : $neighbourCount == self::SPAWN;
+
                 $newBoard[$x][$y] = $newState;
             }
         }
 
-        $this->board = $newBoard;
+        $this->board = new Board($newBoard);
     }
 
     function render()
@@ -59,7 +63,7 @@ class GameOfLife
         echo "\e[H\e[J";
 
         $board = '';
-        foreach ($this->board as $row) {
+        foreach ($this->getCells() as $row) {
             foreach ($row as $cellState) {
                 $board .= ' ' . ($cellState ? '▓▓' : '░░');
             }
@@ -82,6 +86,23 @@ class GameOfLife
     }
 }
 
+class Board
+{
+    function __construct($board)
+    {
+        if (empty($board)) {
+            throw new Exception('Board must not be empty');
+        }
+
+        $this->board = $board;
+    }
+
+    function array()
+    {
+        return $this->board;
+    }
+}
+
 $boardState = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -96,4 +117,8 @@ $boardState = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-(new GameOfLife($boardState))->run();
+$game = new GameOfLife();
+$board = new Board($boardState);
+$game->board = $board;
+
+$game->run();
