@@ -22,6 +22,23 @@ class GameOfLife
 
     public Board $board;
 
+    private static $instance = null;
+
+    private function __construct($boardState)
+    {
+        $board = new Board($boardState);
+        $this->board = $board;
+    }
+
+    static function load($boardState)
+    {
+        if (!self::$instance) {
+            self::$instance = new GameOfLife($boardState);
+        }
+
+        return self::$instance;
+    }
+
     function getCells()
     {
         return $this->board->array();
@@ -117,8 +134,6 @@ $boardState = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-$game = new GameOfLife();
-$board = new Board($boardState);
-$game->board = $board;
+$game = GameOfLife::load($boardState);
 
 $game->run();
