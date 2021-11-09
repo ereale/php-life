@@ -26,7 +26,12 @@ class GameOfLife
 
     private function __construct($boardState)
     {
-        $board = new Board($boardState);
+        try {
+            $board = new Board($boardState);
+        } catch (Exception $e) {
+            $board = Board::empty();
+        }
+
         $this->board = $board;
     }
 
@@ -107,8 +112,8 @@ class Board
 {
     function __construct($board)
     {
-        if (empty($board)) {
-            throw new Exception('Board must not be empty');
+        if (count($board) > 100) {
+            throw new Exception('Board is too big');
         }
 
         $this->board = $board;
@@ -117,6 +122,11 @@ class Board
     function array()
     {
         return $this->board;
+    }
+
+    static function empty()
+    {
+        return new Board([]);
     }
 }
 
