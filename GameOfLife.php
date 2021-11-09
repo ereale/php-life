@@ -108,8 +108,6 @@ class Board
 {
     function __construct($board = [], $width = 0, $height = 0)
     {
-        $this->width = $width;
-        $this->height = $height;
         $this->board = $board;
 
         if ($this->getWidth() > 100 or $this->getHeight() > 100) {
