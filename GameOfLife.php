@@ -56,6 +56,25 @@ class GameOfLife
 
     function evolve()
     {
+        // clear the screen
+        echo "\e[H\e[J";
+
+        // display the board
+        $board = '';
+        foreach ($this->getCells() as $row) {
+            foreach ($row as $cellState) {
+                $board .= ' ' . ($cellState ? '▓▓' : '░░');
+            }
+            $board .= "\n";
+        }
+        echo "Game of Life";
+        echo "\n\n$board\n";
+        echo "Ctrl-C to quit...";
+
+        // sleep 1 second
+        sleep(1);
+
+        // board neighbour cell offsets
         $neighbourOffsets = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
         $newBoard = [];
@@ -68,41 +87,18 @@ class GameOfLife
                     if ($this->getCells()[$x+$xOffset][$y+$yOffset])
                         $neighbourCount = $neighbourCount + 1;
 
-                // update the target cell based on GOL rules
-                $newState = $cellState
+                $newBoard[$x][$y] = $cellState
                     ? $neighbourCount >= self::MIN && $neighbourCount <= self::MAX
                     : $neighbourCount == self::SPAWN;
-
-                $newBoard[$x][$y] = $newState;
             }
         }
 
         $this->board = new Board($newBoard);
     }
 
-    function render()
-    {
-        echo "\e[H\e[J";
-
-        $board = '';
-        foreach ($this->getCells() as $row) {
-            foreach ($row as $cellState) {
-                $board .= ' ' . ($cellState ? '▓▓' : '░░');
-            }
-            $board .= "\n";
-        }
-
-        echo "Game of Life";
-        echo "\n\n$board\n";
-        echo "Ctrl-C to quit...";
-
-        sleep(1);
-    }
-
     function run()
     {
         while (true) {
-            $this->render();
             $this->evolve();
         }
     }
