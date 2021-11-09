@@ -20,7 +20,7 @@ class GameOfLife
     const MAX = '3';
     const SPAWN = '3';
 
-    public Board $board;
+    public $board;
 
     private static $instance = null;
 
