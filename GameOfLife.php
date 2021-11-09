@@ -35,10 +35,10 @@ class GameOfLife
         $this->board = $board;
     }
 
-    static function load($boardState)
+    static function load($boardState, $width, $height)
     {
         if (!self::$instance) {
-            self::$instance = new GameOfLife($boardState);
+            self::$instance = new GameOfLife($boardState, $width, $height);
         }
 
         return self::$instance;
@@ -138,20 +138,38 @@ class Board
     }
 }
 
-$boardState = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
+// ======================
+//          Main
+// ======================
 
-$game = GameOfLife::load($boardState);
+function playGameOfLife($boardState)
+{
+    (GameOfLife::load($boardState, count($boardState[0]), count($boardState)))->run();
+}
 
-$game->run();
+function main()
+{
+    global $argv;
+
+    if ($boardStateFile = $argv[1]) {
+        $boardState = json_decode(file_get_contents($boardStateFile), true);
+    } else {
+        $boardState = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ];
+    }
+
+    playGameOfLife($boardState);
+}
+
+main();
