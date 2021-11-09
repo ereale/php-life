@@ -142,7 +142,8 @@ class Board
 
 function playGameOfLife($boardState)
 {
-    (GameOfLife::load($boardState, count($boardState[0]), count($boardState)))->run();
+    $game = GameOfLife::load($boardState, count($boardState[0]), count($boardState));
+    $game->run();
 }
 
 function main()
